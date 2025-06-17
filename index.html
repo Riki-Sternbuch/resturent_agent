@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Flavorful Bistro - Smart Chat</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  
+  <style>
+    /* General Styles */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      /* Dark, prestigious background */
+      background: linear-gradient(135deg, #0a0a0a 0%, #202020 100%);
+      min-height: 100vh;
+      color: #e0e0e0; /* Light text on dark background */
+      direction: ltr; /* Left-to-right for English */
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      color: #f0f0f0;
+      margin-bottom: 30px;
+      padding: 25px;
+      background: rgba(0, 0, 0, 0.6); /* Slightly transparent dark background */
+      border-radius: 15px;
+      backdrop-filter: blur(5px); /* Subtle blur */
+      border: 1px solid rgba(255, 255, 255, 0.1); /* Light border for prestige */
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.8rem;
+      font-weight: 700;
+      text-shadow: 0 0 15px rgba(255,255,255,0.3); /* Softer glow */
+      letter-spacing: 1px;
+    }
+
+    .header p {
+      margin: 10px 0 0 0;
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    /* Restaurant Shabbat Info */
+    .shabbat-info {
+      background: rgba(255, 200, 0, 0.1); /* Subtle gold background */
+      color: #ffc107; /* Gold text */
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 200, 0, 0.3);
+    }
+
+    /* Chat Container Layout */
+    .chat-container {
+      display: grid;
+      grid-template-columns: 320px 1fr; /* Slightly wider sidebar */
+      gap: 25px; /* Increased gap */
+      height: 75vh; /* Taller chat area */
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: rgba(35, 35, 35, 0.9); /* Darker, almost opaque */
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar h3 {
+      color: #ffffff;
+      margin-top: 0;
+      font-size: 1.4rem;
+      border-bottom: 2px solid #ffcc00; /* Gold accent line */
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    /* Restaurant Info in Sidebar */
+    .restaurant-info {
+      background: rgba(50, 50, 50, 0.7); /* Slightly lighter dark background */
+      padding: 18px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      border-left: 4px solid #ffcc00; /* Gold accent */
+      color: #e0e0e0;
+    }
+
+    .restaurant-info h4 {
+      margin: 0 0 10px 0;
+      color: #ffd700; /* Bright gold for heading */
+      font-size: 1.3rem;
+    }
+
+    .restaurant-info p {
+      margin: 8px 0;
+      font-size: 1rem;
+      color: #c0c0c0; /* Slightly muted text */
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .quick-btn {
+      background: linear-gradient(45deg, #333333, #555555); /* Dark metallic gradient */
+      color: #f0f0f0;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-weight: 500;
+    }
+
+    .quick-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+      background: linear-gradient(45deg, #444444, #666666);
+    }
+
+    /* Allergen Selection */
+    .allergen-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .allergen-chip {
+      background: #444444;
+      border: 2px solid #666666;
+      padding: 8px 15px;
+      border-radius: 25px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+      color: #e0e0e0;
+      font-weight: 500;
+    }
+
+    .allergen-chip.selected {
+      background: #ffcc00; /* Gold selection */
+      color: #333333; /* Dark text on gold */
+      border-color: #ffd700;
+      font-weight: 700;
+    }
+
+    .allergen-chip:hover {
+      border-color: #ffcc00;
+      box-shadow: 0 2px 8px rgba(255,200,0,0.3);
+    }
+
+    /* Main Chat Area */
+    .main-chat {
+      background: rgba(35, 35, 35, 0.9);
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+      border-bottom: 1px solid #444;
+    }
+
+    .message {
+      margin-bottom: 20px;
+      padding: 18px;
+      border-radius: 15px;
+      max-width: 85%;
+      animation: fadeIn 0.3s ease-in;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .user-message {
+      background: linear-gradient(45deg, #007bff, #0056b3); /* Deep blue for user */
+      color: white;
+      margin-left: auto;
+      text-align: left; /* Changed from right for LTR */
+    }
+
+    .bot-message {
+      background: #3a3a3a; /* Dark grey for bot */
+      color: #e0e0e0;
+      border-left: 5px solid #ffcc00; /* Gold accent */
+      text-align: left; /* Default for LTR */
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #c0c0c0;
+      font-style: italic;
+    }
+
+    .loading::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffcc00; /* Gold spinner */
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Chat Input */
+    .chat-input {
+      padding: 20px;
+      display: flex;
+      gap: 15px; /* Increased gap */
+      align-items: flex-end;
+    }
+
+    .input-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    #messageInput {
+      padding: 15px;
+      border: 2px solid #555;
+      border-radius: 28px; /* More rounded */
+      font-size: 16px;
+      resize: none;
+      min-height: 55px; /* Slightly taller */
+      max-height: 120px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      background: #333;
+      color: #eee;
+    }
+
+    #messageInput:focus {
+      outline: none;
+      border-color: #ffcc00; /* Gold border on focus */
+      box-shadow: 0 0 0 4px rgba(255,200,0,0.2); /* Gold glow on focus */
+    }
+
+    .send-btn {
+      background: linear-gradient(45deg, #ffcc00, #ffa500); /* Vibrant gold gradient */
+      color: #333; /* Dark text on gold */
+      border: none;
+      border-radius: 50%;
+      width: 55px; /* Slightly larger */
+      height: 55px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 24px; /* Larger text */
+      box-shadow: 0 4px 15px rgba(255,165,0,0.4);
+    }
+
+    .send-btn:hover {
+      transform: scale(1.08); /* Slightly less aggressive scale */
+      box-shadow: 0 6px 20px rgba(255,165,0,0.6);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Preferences */
+    .preferences-section {
+      margin-top: 25px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      /* Style checkboxes for dark theme */
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: #555;
+      border: 2px solid #777;
+      border-radius: 4px;
+      transition: background-color 0.3s, border-color 0.3s;
+      position: relative;
+    }
+
+    .checkbox-item input[type="checkbox"]:checked {
+      background-color: #ffcc00; /* Gold checked */
+      border-color: #ffcc00;
+    }
+
+    .checkbox-item input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #333; /* Dark checkmark */
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .checkbox-item label {
+      cursor: pointer;
+      font-size: 15px;
+      color: #e0e0e0;
+    }
+
+    /* Clear Chat Button */
+    .clear-btn {
+      background: #dc3545; /* Red for clear action */
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      justify-content: center;
+      font-weight: 500;
+    }
+
+    .clear-btn:hover {
+      background: #c82333;
+      box-shadow: 0 4px 10px rgba(220,53,69,0.4);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .chat-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 15px;
+      }
+      
+      .sidebar {
+        order: 2;
+        height: auto;
+      }
+      
+      .main-chat {
+        order: 1;
+        height: 60vh;
+      }
+      
+      .header h1 {
+        font-size: 2.2rem;
+      }
+
+      .header p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>The Flavorful Bistro</h1>
+      <p>Your Intelligent Assistant for Orders and Allergen Information</p>
+      <div class="shabbat-info">
+        <p>✨ Please note: Our esteemed restaurant observes Shabbat and is **closed on Saturdays** (from Friday evening until Saturday evening). We look forward to serving you during our open hours!</p>
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div class="sidebar">
+        <div class="restaurant-info">
+          <h4>Restaurant Details</h4>
+          <p><strong>Address:</strong> Tel Aviv, Israel</p>
+          <p><strong>Phone:</strong> 03-1234567</p>
+          <p><strong>Opening Hours:</strong></p>
+          <p>Sunday-Thursday: 12:00 PM - 11:00 PM</p>
+          <p>Friday-Saturday: 06:00 PM - 12:00 AM</p>
+        </div>
+
+        <h3>Quick Actions</h3>
+        <div class="quick-actions">
+          <button class="quick-btn" onclick="sendQuickMessage('Show me the full menu')">
+            Show Menu
+          </button>
+          <button class="quick-btn" onclick="sendQuickMessage('I am looking for vegetarian dishes')">
+            Vegetarian Dishes
+          </button>
+          <button class="quick-btn" onclick="sendQuickMessage('I am looking for vegan dishes')">
+            Vegan Dishes
+          </button>
+          <button class="quick-btn" onclick="sendQuickMessage('Recommend a popular dish')">
+            Popular Recommendations
+          </button>
+          <button class="quick-btn" onclick="sendQuickMessage('What are the low-calorie dishes?')">
+            Low-Calorie Dishes
+          </button>
+        </div>
+
+        <h3>Allergens to Avoid</h3>
+        <p style="font-size: 12px; color: #b0b0b0; margin-bottom: 10px;">
+          Select allergens you wish to avoid:
+        </p>
+        <div class="allergen-chips">
+          <div class="allergen-chip" data-allergen="gluten">Gluten</div>
+          <div class="allergen-chip" data-allergen="dairy">Dairy</div>
+          <div class="allergen-chip" data-allergen="eggs">Eggs</div>
+          <div class="allergen-chip" data-allergen="nuts">Nuts</div>
+          <div class="allergen-chip" data-allergen="peanuts">Peanuts</div>
+          <div class="allergen-chip" data-allergen="soy">Soy</div>
+          <div class="allergen-chip" data-allergen="fish">Fish</div>
+          <div class="allergen-chip" data-allergen="shellfish">Shellfish</div>
+          <div class="allergen-chip" data-allergen="sesame">Sesame</div>
+        </div>
+        <button class="quick-btn" onclick="findSafeDishes()" style="margin-top: 18px;">
+          Find Safe Dishes
+        </button>
+
+        <div class="preferences-section">
+          <h3>Additional Preferences</h3>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="vegetarian" />
+              <label for="vegetarian">Vegetarian</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="vegan" />
+              <label for="vegan">Vegan</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="lowCalorie" />
+              <label for="lowCalorie">Low Calorie</label>
+            </div>
+          </div>
+          <button class="quick-btn" onclick="getRecommendations()" style="margin-top: 18px;">
+            Get Recommendations
+          </button>
+        </div>
+
+        <button class="clear-btn" onclick="clearChat()">
+          Clear Chat
+        </button>
+      </div>
+
+      <div class="main-chat">
+        <div class="chat-messages" id="chatMessages">
+          <div class="message bot-message">
+            <strong>Restaurant Bot:</strong><br>
+            Hello! I am The Flavorful Bistro's smart assistant. 🍽️<br>
+            I can assist you with:<br>
+            • Checking allergens in dishes<br>
+            • Recommending suitable dishes<br>
+            • Nutritional information<br>
+            • Displaying the menu<br><br>
+            How may I help you today?
+          </div>
+        </div>
+        
+        <div class="chat-input">
+          <div class="input-container">
+            <textarea 
+              id="messageInput" 
+              placeholder="Ask me about the menu, allergens, or request recommendations..."
+              rows="1"
+            ></textarea>
+          </div>
+          <button class="send-btn" id="sendBtn">
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script>
+    const sendBtn = document.getElementById("sendBtn");
+    const messageInput = document.getElementById("messageInput");
+    const chatMessages = document.getElementById("chatMessages");
+    let selectedAllergens = [];
+
+    messageInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    messageInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.ctrlKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    document.querySelectorAll('.allergen-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        const allergen = this.dataset.allergen;
+        if (this.classList.contains('selected')) {
+          this.classList.remove('selected');
+          selectedAllergens = selectedAllergens.filter(a => a !== allergen);
+        } else {
+          this.classList.add('selected');
+          selectedAllergens.push(allergen);
+        }
+      });
+    });
+
+    sendBtn.onclick = sendMessage;
+
+    function addMessage(content, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+      messageDiv.innerHTML = isUser ? `<strong>You:</strong><br>${content}` : `<strong>Restaurant Bot:</strong><br>${content}`;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addLoadingMessage() {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'message bot-message loading';
+      loadingDiv.innerHTML = 'Bot is preparing a response...';
+      loadingDiv.id = 'loading-message';
+      chatMessages.appendChild(loadingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return loadingDiv;
+    }
+
+    function removeLoadingMessage() {
+      const loading = document.getElementById('loading-message');
+      if (loading) loading.remove();
+    }
+
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message) {
+        M.toast({html: 'Please enter a message!', classes: 'orange'});
+        return;
+      }
+
+      addMessage(message, true);
+      messageInput.value = '';
+      messageInput.style.height = 'auto';
+
+      const loadingMsg = addLoadingMessage();
+      sendBtn.disabled = true;
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: message
+        });
+
+        const data = await res.json();
+        removeLoadingMessage();
+
+        if (data.response || data.answer) {
+          let formatted = formatResponse(data.response || data.answer);
+          addMessage(formatted);
+        } else {
+          addMessage("Sorry, I didn't understand the request. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        removeLoadingMessage();
+        addMessage(`❌ Server connection error: ${error.message}`);
+        M.toast({html: 'Server connection error', classes: 'red'});
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    function formatResponse(response) {
+      return response
+        .replace(/\n/g, '<br>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+
+    function sendQuickMessage(msg) {
+      messageInput.value = msg;
+      sendMessage();
+    }
+
+    function findSafeDishes() {
+      if (selectedAllergens.length === 0) {
+        M.toast({html: 'Please select at least one allergen', classes: 'orange'});
+        return;
+      }
+      const allergensEnglish = {
+        'gluten': 'gluten',
+        'dairy': 'dairy',
+        'eggs': 'eggs',
+        'nuts': 'nuts',
+        'peanuts': 'peanuts',
+        'soy': 'soy',
+        'fish': 'fish',
+        'shellfish': 'shellfish',
+        'sesame': 'sesame'
+      };
+      const allergenNames = selectedAllergens.map(a => allergensEnglish[a]).join(', ');
+      sendQuickMessage(`Find me dishes that do not contain: ${allergenNames}`);
+    }
+
+    function getRecommendations() {
+      let preferences = [];
+      if (document.getElementById('vegetarian').checked) preferences.push('vegetarian');
+      if (document.getElementById('vegan').checked) preferences.push('vegan');
+      if (document.getElementById('lowCalorie').checked) preferences.push('low-calorie');
+
+      let msg = 'Recommend dishes';
+      if (preferences.length > 0) msg += ' that are: ' + preferences.join(', ');
+      if (selectedAllergens.length > 0) {
+        const allergensEnglish = {
+          'gluten': 'gluten',
+          'dairy': 'dairy',
+          'eggs': 'eggs',
+          'nuts': 'nuts',
+          'peanuts': 'peanuts',
+          'soy': 'soy',
+          'fish': 'fish',
+          'shellfish': 'shellfish',
+          'sesame': 'sesame'
+        };
+        const allergenNames = selectedAllergens.map(a => allergensEnglish[a]).join(', ');
+        msg += ` and do not contain: ${allergenNames}`;
+      }
+      sendQuickMessage(msg);
+    }
+
+    function clearChat() {
+      chatMessages.innerHTML = `
+        <div class="message bot-message">
+          <strong>Restaurant Bot:</strong><br>
+          Hello! I am The Flavorful Bistro's smart assistant. 🍽️<br>
+          How may I help you today?
+        </div>
+      `;
+      M.toast({html: 'Chat cleared successfully!', classes: 'green'});
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      M.AutoInit();
+      M.toast({html: 'Welcome to The Flavorful Bistro! 🍽️', classes: 'blue'});
+    });
+  </script>
+
+</body>
+</html>

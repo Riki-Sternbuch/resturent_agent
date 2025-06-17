@@ -1,0 +1,51 @@
+# config.yaml - הגדרות סוכן המסעדה
+
+# הגדרות כלליות
+restaurant:
+  name: "מסעדת הטעמים"
+  location: "תל אביב, ישראל"
+  phone: "03-1234567"
+  opening_hours: "ראשון-חמישי: 12:00-23:00, שישי-שבת: 18:00-24:00"
+
+# הגדרות הסוכן
+agent:
+  name: "restaurant_agent"
+  description: "סוכן מסעדה חכם לטיפול בלקוחות"
+  language: "hebrew"
+  personality: "ידידותי, מקצועי, עוזר"
+  
+# הגדרות המודל
+model:
+  provider: "google"
+  model_name: "gemini-1.5-flash"
+  temperature: 0.7
+  max_tokens: 1000
+  
+# הגדרות אלרגנים
+allergens:
+  common_allergens:
+    - gluten
+    - dairy
+    - eggs
+    - nuts
+    - peanuts
+    - soy
+    - fish
+    - shellfish
+    - sesame
+  
+  severity_levels:
+    mild: "רגישות קלה"
+    moderate: "רגישות בינונית"
+    severe: "אלרגיה חמורה"
+
+# הגדרות תפריט
+menu:
+  categories:
+    - main_dishes
+    - salads
+    - desserts
+    - drinks
+  
+  # הגדרות נוספות, לדוגמה:
+  # max_recommendations: 5
